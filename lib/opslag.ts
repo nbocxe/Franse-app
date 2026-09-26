@@ -13,7 +13,15 @@ export const STANDAARD_INSTELLINGEN: Instellingen = {
   luisteren: true,
   spreken: true,
   allesVrij: false,
+  thema: "auto",
 };
+
+/** Zet het gekozen thema op de pagina (automatisch = geen vaste keuze, dan volgt de app je apparaat). */
+export function pasThemaToe(thema: Instellingen["thema"]) {
+  const el = document.documentElement;
+  if (thema === "auto") delete el.dataset.theme;
+  else el.dataset.theme = thema === "donker" ? "dark" : "light";
+}
 
 export function leeg(): AppData {
   return { versie: 1, lessen: {}, items: {}, instellingen: STANDAARD_INSTELLINGEN, dagen: [], xp: 0 };

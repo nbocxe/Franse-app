@@ -246,7 +246,8 @@ export function vormKoppel(ww: string, tijd: Tijd, rng: Rng): Oefening {
   return {
     soort: "koppel", items: vormen.map((v) => vormItem(ww, tijd, v.persoon)), vaardigheid: "doen",
     opdracht: `Wat hoort bij elkaar? (${WERKWOORDEN[ww].inf}, ${TIJD_KORT[tijd]})`,
-    paren: vormen.map((v) => ({ links: PERSONEN[v.persoon], rechts: v.rest, audio: v.volledig.replace(/\(e\)s?/, "") })),
+    // Alleen het voornaamwoord laten horen: de hele vorm zou het antwoord verklappen.
+    paren: vormen.map((v) => ({ links: PERSONEN[v.persoon], rechts: v.rest, audio: PERSONEN[v.persoon].replace("/", ", ") })),
   };
 }
 

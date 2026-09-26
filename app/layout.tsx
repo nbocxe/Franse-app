@@ -17,9 +17,15 @@ export const viewport: Viewport = {
   ],
 };
 
+const THEMA_SCRIPT = `try{var t=JSON.parse(localStorage.getItem("franseapp:v1")||"{}").instellingen;t=t&&t.thema;if(t==="donker")document.documentElement.dataset.theme="dark";if(t==="licht")document.documentElement.dataset.theme="light"}catch(e){}`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="nl">
+    <html lang="nl" suppressHydrationWarning>
+      <head>
+        {/* Zet het gekozen thema al vóór het tekenen, zodat het scherm niet eerst even de verkeerde kleur heeft. */}
+        <script dangerouslySetInnerHTML={{ __html: THEMA_SCRIPT }} />
+      </head>
       <body>
         <main>{children}</main>
         <TabBalk />

@@ -33,8 +33,9 @@
   color-scheme: light;
 }
 
+/* Donker: automatisch (volgt je apparaat), of vast gekozen in je profiel via data-theme. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --papier: #1a1714;
     --vlak: #24201c;
     --rand: #3a332c;
@@ -58,6 +59,31 @@
     --vrouwelijk: #f0909e;
     color-scheme: dark;
   }
+}
+
+:root[data-theme="dark"] {
+  --papier: #1a1714;
+  --vlak: #24201c;
+  --rand: #3a332c;
+  --lijn: #2f2924;
+  --inkt: #efe8dd;
+  --tekst-2: #cfc5b8;
+  --zacht: #a99e90;
+  --accent: #e08a5e;
+  --accent-donker: #f0a47c;
+  --op-accent: #1a1714;
+  --accent-zacht: #3b2a20;
+  --goed: #7fc7a0;
+  --goed-zacht: #1f3329;
+  --fout: #f08a7e;
+  --fout-zacht: #3d2220;
+  --illustratie-achter: #2a241f;
+  --tint-klei: #7a4a2e;
+  --tint-salie: #3e5a50;
+  --tint-zand: #4a4036;
+  --mannelijk: #8fb4ea;
+  --vrouwelijk: #f0909e;
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
