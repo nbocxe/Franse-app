@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { HOOFDSTUKKEN, woordenVan } from "@/lib/cursus";
-import { leeg, reeks, useAppData } from "@/lib/opslag";
+import { leeg, pasThemaToe, reeks, useAppData } from "@/lib/opslag";
 import { fransStemmen, kanHerkennen, kanVoorlezen, spreek, stelSpraakIn } from "@/lib/spraak";
 import { beheersing } from "@/lib/srs";
 import type { AppData, Instellingen } from "@/lib/types";
@@ -43,6 +43,7 @@ export default function Profiel() {
   const zet = (deel: Partial<Instellingen>) => {
     const nieuw = { ...inst, ...deel };
     stelSpraakIn(nieuw.stem, nieuw.snelheid);
+    pasThemaToe(nieuw.thema);
     wijzig((d) => ({ ...d, instellingen: nieuw }));
   };
 
@@ -107,6 +108,16 @@ export default function Profiel() {
       <section className="sectie">
         <h2>Instellingen</h2>
         <div className="kaart" style={{ gap: 4 }}>
+          <div className="schakelaar">
+            <span>Weergave</span>
+            <div className="chips" role="radiogroup" aria-label="Weergave">
+              {([["licht", "☀️ Licht"], ["donker", "🌙 Donker"], ["auto", "Automatisch"]] as const).map(([t, naam]) => (
+                <button key={t} className="chip" role="radio" aria-checked={inst.thema === t} aria-pressed={inst.thema === t} onClick={() => zet({ thema: t })}>
+                  {naam}
+                </button>
+              ))}
+            </div>
+          </div>
           <Schakelaar label="Luisteroefeningen" uitleg="Uit als je geen geluid kunt gebruiken." aan={inst.luisteren} zet={(v) => zet({ luisteren: v })} />
           <Schakelaar
             label="Spreekoefeningen"

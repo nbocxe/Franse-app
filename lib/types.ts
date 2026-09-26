@@ -118,6 +118,8 @@ export interface Instellingen {
   luisteren: boolean;
   spreken: boolean;
   allesVrij: boolean;
+  /** Licht, donker of automatisch (volgt je apparaat). */
+  thema: "auto" | "licht" | "donker";
 }
 
 export interface AppData {
