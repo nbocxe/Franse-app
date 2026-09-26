@@ -7,15 +7,43 @@ let instellingen = { stem: "", snelheid: 0.9 };
 
 export function stelSpraakIn(stem: string, snelheid: number) {
   instellingen = { stem, snelheid };
+  // Sommige browsers (Chrome) laden hun stemmen pas na de eerste vraag; zo staan ze klaar voor het eerste woord.
+  if (kanVoorlezen()) window.speechSynthesis.getVoices();
 }
 
 export function kanVoorlezen(): boolean {
   return typeof window !== "undefined" && "speechSynthesis" in window;
 }
 
+/**
+ * Hoe goed een stem klinkt, op basis van de naam. Browsers geven geen kwaliteitslabel mee,
+ * maar de natuurlijke (neurale) stemmen zijn aan hun naam te herkennen.
+ */
+export function stemKwaliteit(v: SpeechSynthesisVoice): number {
+  let score = 0;
+  // Edge: "Microsoft Denise Online (Natural)", Chrome: "Google français", Apple: "Amélie (Premium/Verbeterd)".
+  if (/natural|neural|online/i.test(v.name)) score += 100;
+  if (/premium|enhanced|verbeterd|améliorée|amelioree|siri/i.test(v.name)) score += 90;
+  if (/google/i.test(v.name)) score += 80;
+  if (/amélie|amelie|thomas|audrey|aurélie|aurelie|marie|daniel|denise|henri|vivienne|eloise|rémi|remi/i.test(v.name)) score += 20;
+  // Frankrijk-Frans gaat voor Canadees, Belgisch of Zwitsers Frans.
+  if (v.lang.toLowerCase().replace("_", "-") === "fr-fr") score += 15;
+  // Oude, robotachtige systeemstemmen.
+  if (/hortense|julie|paul|espeak|compact/i.test(v.name) && score < 80) score -= 30;
+  return score;
+}
+
 export function fransStemmen(): SpeechSynthesisVoice[] {
   if (!kanVoorlezen()) return [];
-  return window.speechSynthesis.getVoices().filter((v) => v.lang.toLowerCase().startsWith("fr"));
+  return window.speechSynthesis
+    .getVoices()
+    .filter((v) => v.lang.toLowerCase().startsWith("fr"))
+    .sort((a, b) => stemKwaliteit(b) - stemKwaliteit(a));
+}
+
+/** Een stem die natuurlijk klinkt (niet de ouderwetse robotstem). */
+export function isGoedeStem(v: SpeechSynthesisVoice): boolean {
+  return stemKwaliteit(v) >= 80;
 }
 
 function besteStem(): SpeechSynthesisVoice | undefined {
@@ -24,12 +52,7 @@ function besteStem(): SpeechSynthesisVoice | undefined {
     const gekozen = stemmen.find((v) => v.name === instellingen.stem);
     if (gekozen) return gekozen;
   }
-  // Voorkeur: Frankrijk-Frans, en de bekende goede stemmen.
-  const fr = stemmen.filter((v) => v.lang.toLowerCase().replace("_", "-") === "fr-fr");
-  const lijst = fr.length ? fr : stemmen;
-  return (
-    lijst.find((v) => /google|amélie|amelie|thomas|audrey|marie|premium|enhanced|natural/i.test(v.name)) ?? lijst[0]
-  );
+  return stemmen[0];
 }
 
 /** Leest Franse tekst voor. `langzaam` = schildpadknop. */

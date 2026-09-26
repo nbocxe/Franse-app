@@ -203,10 +203,21 @@ function passeComposeVormen(ww: Werkwoord): Vorm[] {
     const volledig = `${h.volledig} ${getoond}`;
     return {
       persoon, voornaamwoord: h.voornaamwoord, rest, volledig,
-      uitspraak: `${h.uitspraak} ${ww.participeUitspraak}`,
+      uitspraak: `${h.uitspraak}${verbinding(h.volledig, ww.participeUitspraak!)}${ww.participeUitspraak}`,
       antwoorden: varianten.flatMap((v) => [`${h.volledig} ${v}`, `${h.rest} ${v}`]),
     };
   });
+}
+
+/**
+ * Liaison: vóór een klinker spreek je de slotmedeklinker van est, sont, ont, sommes en êtes wel uit
+ * (il est allé = iel è-talee, ils ont eu = iel-zõ-tuu).
+ */
+function verbinding(hulpvorm: string, deelwoordUitspraak: string): string {
+  if (!/^[aeiouèéêõãẽ]/.test(deelwoordUitspraak)) return " ";
+  if (/ (est|sont|ont)$/.test(hulpvorm)) return "-t";
+  if (/ (sommes|êtes)$/.test(hulpvorm)) return "-z";
+  return " ";
 }
 
 const IMPARFAIT_UITGANGEN = ["ais", "ais", "ait", "ions", "iez", "aient"];
@@ -229,7 +240,8 @@ function imparfaitVormen(ww: Werkwoord): Vorm[] {
     const volledig = voornaamwoord.endsWith("'") ? voornaamwoord + rest : `${voornaamwoord} ${rest}`;
     return {
       persoon, voornaamwoord, rest, volledig,
-      uitspraak: vnwUitspraak[persoon] + su + uitgangUitspraak[persoon],
+      // Geen dubbele j: nous voyions = noe vwajõ.
+      uitspraak: (vnwUitspraak[persoon] + su + uitgangUitspraak[persoon]).replace(/jj/g, "j"),
       antwoorden: [volledig, rest],
     };
   });
@@ -248,9 +260,15 @@ export function toonVorm(vorm: Vorm): string {
   return vorm.volledig;
 }
 
-/** Het voornaamwoord zoals het in een opgave staat: "nous ___". */
+/** Het voornaamwoord zoals het in de vorm geschreven wordt: "j'" vóór een klinker, anders "je", "il/elle" enz. */
 export function toonVoornaamwoord(vorm: Vorm): string {
   if (vorm.persoon === 2) return "il/elle";
   if (vorm.persoon === 5) return "ils/elles";
-  return vorm.voornaamwoord === "j'" ? "je (j')" : vorm.voornaamwoord;
+  return vorm.voornaamwoord;
+}
+
+/** Een opgave met een gat: "nous ___", maar "j'___" (zonder spatie, zoals je het schrijft). */
+export function metGat(vorm: Vorm): string {
+  const vnw = toonVoornaamwoord(vorm);
+  return vnw.endsWith("'") ? `${vnw}___` : `${vnw} ___`;
 }

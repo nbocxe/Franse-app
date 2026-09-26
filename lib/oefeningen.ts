@@ -4,7 +4,7 @@ import { ALLE_WOORDEN, HOOFDSTUKKEN, WOORD } from "./cursus/index.ts";
 import { getalInWoorden, getalUitspraak } from "./getallen.ts";
 import type { Tijd, Woord, Zin } from "./types.ts";
 import { TIJD_KORT } from "./types.ts";
-import { PERSONEN, toonVoornaamwoord, toonVorm, vervoeg, WERKWOORDEN } from "./werkwoorden.ts";
+import { metGat, toonVoornaamwoord, toonVorm, vervoeg, WERKWOORDEN } from "./werkwoorden.ts";
 
 export type Vaardigheid = "lezen" | "luisteren" | "schrijven" | "spreken" | "doen";
 
@@ -197,7 +197,7 @@ export function vormTyp(ww: string, tijd: Tijd, persoon: number): Oefening {
     soort: "typ", items: [vormItem(ww, tijd, persoon)], vaardigheid: "schrijven",
     vraag: {
       opdracht: `Vervoeg ${w.inf} (${TIJD_KORT[tijd]})`,
-      tekst: `${toonVoornaamwoord(v)} ___`,
+      tekst: metGat(v),
       sub: `${w.inf} = ${w.nl}`,
       emoji: w.emoji,
     },
@@ -212,7 +212,7 @@ export function vormKies(ww: string, tijd: Tijd, persoon: number, rng: Rng): Oef
   const { opties, juist } = meerkeuze({ tekst: v.rest }, vormen.map((x) => ({ tekst: x.rest })), rng);
   return {
     soort: "kies", items: [vormItem(ww, tijd, persoon)], vaardigheid: "lezen",
-    vraag: { opdracht: `Kies de juiste vorm van ${w.inf}`, tekst: `${toonVoornaamwoord(v)} ___`, sub: TIJD_KORT[tijd], emoji: w.emoji },
+    vraag: { opdracht: `Kies de juiste vorm van ${w.inf}`, tekst: metGat(v), sub: TIJD_KORT[tijd], emoji: w.emoji },
     opties, juist, uitleg: vormUitleg(ww, tijd, persoon),
   };
 }
@@ -233,7 +233,7 @@ export function vormSpreek(ww: string, tijd: Tijd, persoon: number): Oefening {
   const gesproken = v.volledig.replace(/\(e\)s?/, "");
   return {
     soort: "spreek", items: [vormItem(ww, tijd, persoon)], vaardigheid: "spreken",
-    vraag: { opdracht: `Zeg hardop: ${w.inf}, ${TIJD_KORT[tijd]}`, tekst: `${toonVoornaamwoord(v)} …`, emoji: w.emoji, audio: gesproken },
+    vraag: { opdracht: `Zeg hardop: ${w.inf}, ${TIJD_KORT[tijd]}`, tekst: `${toonVoornaamwoord(v)}${toonVoornaamwoord(v).endsWith("'") ? "" : " "}…`, emoji: w.emoji, audio: gesproken },
     doel: gesproken, uitleg: vormUitleg(ww, tijd, persoon),
   };
 }
@@ -246,8 +246,12 @@ export function vormKoppel(ww: string, tijd: Tijd, rng: Rng): Oefening {
   return {
     soort: "koppel", items: vormen.map((v) => vormItem(ww, tijd, v.persoon)), vaardigheid: "doen",
     opdracht: `Wat hoort bij elkaar? (${WERKWOORDEN[ww].inf}, ${TIJD_KORT[tijd]})`,
+    // Links het voornaamwoord zoals je het schrijft (j' vóór een klinker), rechts de rest: j' + ai = j'ai.
     // Alleen het voornaamwoord laten horen: de hele vorm zou het antwoord verklappen.
-    paren: vormen.map((v) => ({ links: PERSONEN[v.persoon], rechts: v.rest, audio: PERSONEN[v.persoon].replace("/", ", ") })),
+    paren: vormen.map((v) => {
+      const vnw = toonVoornaamwoord(v);
+      return { links: vnw, rechts: v.rest, audio: vnw === "j'" ? "je" : vnw.replace("/", ", ") };
+    }),
   };
 }
 

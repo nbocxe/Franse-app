@@ -106,3 +106,35 @@ test("elke les levert geldige oefeningen op", () => {
     }
   }
 });
+
+test("nergens staat je, le, la, ne … vóór een klinker (dat moet j', l', n' zijn)", async () => {
+  const { vormKoppel, vormKies, vormTyp } = await import("./oefeningen.ts");
+  const fout = /\b(je|le|la|ne|me|te|se|de|que) [aeiouyéèêàâîôûh]/i;
+  const klinker = /^[aeiouyéèêàâîôûh]/i;
+  const rng = zaad(3);
+  // Oefeningen: een los voornaamwoord "je" mag nooit gekoppeld worden aan een vorm die met een klinker begint.
+  for (const ww of Object.values(WERKWOORDEN)) {
+    for (const t of tijdenVan(ww)) {
+      for (let i = 0; i < 5; i++) {
+        const k = vormKoppel(ww.id, t, rng);
+        if (k.soort !== "koppel") continue;
+        for (const p of k.paren) assert.ok(!(p.links === "je" && klinker.test(p.rechts)), `${ww.inf} ${t}: je + ${p.rechts}`);
+      }
+      for (let p = 0; p < 6; p++) {
+        for (const o of [vormKies(ww.id, t, p, rng), vormTyp(ww.id, t, p)]) {
+          if (!("vraag" in o) || !o.vraag.tekst) continue;
+          const v = vervoeg(ww, t)[p];
+          assert.ok(!(o.vraag.tekst.startsWith("je ") && klinker.test(v.rest)), `${ww.inf} ${t}: ${o.vraag.tekst}`);
+        }
+      }
+      for (const v of vervoeg(ww, t)) assert.doesNotMatch(v.volledig, fout, v.volledig);
+    }
+  }
+  // Lesstof: zinnen, voorbeelden en woorden.
+  const teksten = [
+    ...HOOFDSTUKKEN.flatMap((h) => h.zinnen.flatMap((z) => [z.fr, ...(z.alt ?? [])])),
+    ...HOOFDSTUKKEN.flatMap((h) => h.grammatica.flatMap((g) => (g.voorbeelden ?? []).map((v) => v.fr))),
+    ...ALLE_WOORDEN.flatMap((w) => [w.fr, w.voorbeeld?.fr ?? ""]),
+  ];
+  for (const t of teksten) assert.doesNotMatch(t, fout, t);
+});
