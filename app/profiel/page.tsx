@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { HOOFDSTUKKEN, woordenVan } from "@/lib/cursus";
 import { leeg, pasThemaToe, reeks, useAppData } from "@/lib/opslag";
-import { fransStemmen, kanHerkennen, kanVoorlezen, spreek, stelSpraakIn } from "@/lib/spraak";
+import { fransStemmen, isGoedeStem, kanHerkennen, kanVoorlezen, spreek, stelSpraakIn } from "@/lib/spraak";
 import { beheersing } from "@/lib/srs";
 import type { AppData, Instellingen } from "@/lib/types";
 import { WERKWOORDEN } from "@/lib/werkwoorden";
@@ -132,19 +132,40 @@ export default function Profiel() {
               <option value="">Automatisch</option>
               {stemmen.map((s) => (
                 <option key={s.name} value={s.name}>
+                  {isGoedeStem(s) ? "★ " : ""}
                   {s.name} ({s.lang})
                 </option>
               ))}
             </select>
-            {stemmen.length === 0 && <span className="zacht klein">Geen Franse stem gevonden op dit apparaat. Installeer er een via de taalinstellingen van je systeem.</span>}
+            {stemmen.length === 0 && (
+              <span className="zacht klein">
+                Geen Franse stem gevonden op dit apparaat. Dan leest je apparaat het Frans voor met een Nederlandse of
+                Engelse stem, en dat klinkt slecht. Zie hieronder hoe je een goede stem krijgt.
+              </span>
+            )}
+            {stemmen.length > 0 && !stemmen.some(isGoedeStem) && (
+              <span className="zacht klein">Op dit apparaat staan alleen de eenvoudige, robotachtige stemmen. Zie hieronder hoe je een betere krijgt.</span>
+            )}
           </label>
           <label className="sectie" style={{ gap: 6, marginTop: 8 }}>
             <span>Spreeksnelheid: {inst.snelheid.toFixed(2)}×</span>
             <input type="range" min={0.5} max={1.2} step={0.05} value={inst.snelheid} onChange={(e) => zet({ snelheid: Number(e.target.value) })} />
           </label>
-          <button className="linkknop" onClick={() => spreek("Bonjour ! Je m'appelle Claire. J'habite à Paris.")}>
+          <button className="linkknop" onClick={() => spreek("Bonjour ! Je m'appelle Claire. J'habite à Paris. Un café, s'il vous plaît.")}>
             Probeer de stem
           </button>
+          <details className="klein tekst-2">
+            <summary style={{ cursor: "pointer", fontWeight: 600 }}>Hoe krijg ik een betere stem?</summary>
+            <p style={{ marginTop: 8 }}>
+              De app gebruikt de stemmen van je eigen apparaat; de natuurlijke stemmen staan met een ★ in de lijst. Zo krijg je er een:
+            </p>
+            <ul style={{ paddingLeft: 20, display: "flex", flexDirection: "column", gap: 6 }}>
+              <li><strong>iPhone/iPad:</strong> Instellingen → Toegankelijkheid → Gesproken materiaal → Stemmen → Frans. Download een stem met ‘Verbeterd’ of ‘Premium’, bijv. Amélie of Thomas. Kies hem daarna hierboven.</li>
+              <li><strong>Mac:</strong> Systeeminstellingen → Toegankelijkheid → Gesproken materiaal → Systeemstem → Beheer stemmen → Frans (Premium of Verbeterd).</li>
+              <li><strong>Windows/Android:</strong> open de app in <strong>Microsoft Edge</strong>. Die heeft gratis natuurlijke stemmen, zoals ‘Denise Online (Natural)’. In Chrome is ‘Google français’ ook goed.</li>
+            </ul>
+            <p>Herlaad de app na het installeren van een stem.</p>
+          </details>
         </div>
       </section>
 
