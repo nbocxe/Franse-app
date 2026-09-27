@@ -26,7 +26,7 @@ const WERKWOORDEN_LIJST: Werkwoord[] = [
     id: "sappeler", inf: "s'appeler", nl: "heten", emoji: "📛", uitspraak: "saplee", groep: "-er",
     present: ["je m'appelle", "tu t'appelles", "il s'appelle", "nous nous appelons", "vous vous appelez", "ils s'appellent"],
     presentUitspraak: ["zjuh mapèl", "tuu tapèl", "iel sapèl", "noe noe-zaplõ", "voe voe-zaplee", "iel sapèl"],
-    tip: "Letterlijk: ik noem mezelf. Bij je, tu, il en ils schrijf je twee l'en, bij nous en vous één.",
+    tip: "Letterlijk: ik noem mezelf. Het tweede woordje (me, te, se, nous, vous) betekent 'mezelf, jezelf, zichzelf'. Daarom staat er twee keer nous of vous: nous nous appelons = wij noemen onszelf. Bij je, tu, il en ils schrijf je twee l'en, bij nous en vous één.",
   },
   {
     id: "parler", inf: "parler", nl: "spreken, praten", emoji: "🗣️", uitspraak: "parlee", groep: "-er",
@@ -127,7 +127,7 @@ const WERKWOORDEN_LIJST: Werkwoord[] = [
     id: "selever", inf: "se lever", nl: "opstaan", emoji: "⏰", uitspraak: "suh luhvee", groep: "-er",
     present: ["je me lève", "tu te lèves", "il se lève", "nous nous levons", "vous vous levez", "ils se lèvent"],
     presentUitspraak: ["zjuh muh lèv", "tuu tuh lèv", "iel suh lèv", "noe noe luhvõ", "voe voe luhvee", "iel suh lèv"],
-    tip: "Letterlijk: zichzelf opheffen. Let op de è bij je, tu, il en ils.",
+    tip: "Letterlijk: zichzelf opheffen. Ook hier staat twee keer nous of vous: nous nous levons (wij heffen onszelf op). Let op de è bij je, tu, il en ils.",
   },
   {
     id: "finir", inf: "finir", nl: "eindigen, afmaken", emoji: "🏁", uitspraak: "fienier", groep: "-ir",

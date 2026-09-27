@@ -412,3 +412,4 @@ select, input[type="range"], input[type="search"], input[type="number"] { font: 
 select, input[type="search"], input[type="number"] {
   padding: 10px; border-radius: 10px; border: 1px solid var(--rand); background: var(--vlak); color: var(--inkt);
 }
+.wederkerend { color: var(--accent); font-style: italic; }

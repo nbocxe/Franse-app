@@ -86,6 +86,19 @@ export function Opmaak({ tekst }: { tekst: string }) {
   );
 }
 
+/** Kleurt het wederkerende voornaamwoord: je <m'>appelle, nous <nous> appelons. */
+function MetWederkerend({ tekst }: { tekst: string }) {
+  const m = tekst.match(/^(je |tu |il\/elle |nous |vous |ils\/elles )(me |m'|te |t'|se |s'|nous |vous )(.+)$/);
+  if (!m) return <>{tekst}</>;
+  return (
+    <>
+      {m[1]}
+      <span className="wederkerend">{m[2]}</span>
+      {m[3]}
+    </>
+  );
+}
+
 export function VervoegTabel({ ww, tijd }: { ww: string; tijd: Tijd }) {
   const vormen = vervoeg(WERKWOORDEN[ww], tijd);
   return (
@@ -94,7 +107,9 @@ export function VervoegTabel({ ww, tijd }: { ww: string; tijd: Tijd }) {
         <tbody>
           {vormen.map((v) => (
             <tr key={v.persoon}>
-              <td className="fr">{toonVorm(v)}</td>
+              <td className="fr">
+                <MetWederkerend tekst={toonVorm(v)} />
+              </td>
               <td className="uitspraak klein">{v.uitspraak}</td>
               <td style={{ width: 48 }}>
                 <Luister tekst={v.volledig.replace(/\(e\)s?/, "")} />
