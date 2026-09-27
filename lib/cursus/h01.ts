@@ -81,6 +81,25 @@ export const H1: Hoofdstuk = {
         "Let op: je leeftijd zeg je met **avoir**. Je *hebt* in het Frans een aantal jaren: *j'ai trente ans*.",
         "**C'est** (het is, dat is) gebruik je heel vaak: *c'est bon*, *c'est mon ami*.",
       ],
+    },
+    {
+      titel: "Je m'appelle: jezelf noemen",
+      tekst: [
+        "Je naam zeg je met **s'appeler**, letterlijk: 'zichzelf noemen'. *Je m'appelle Anna* = ik noem mezelf Anna.",
+        "Er staan dus twee voornaamwoorden: wie het doet (*je*) en 'mezelf' (*me*, vóór een klinker *m'*). Bij nous en vous zijn die twee hetzelfde woord, daarom staat het er twee keer: **nous nous appelons**, **vous vous appelez**. Dat is geen typfout!",
+        "In de tabellen zie je het wederkerende woordje in een andere kleur.",
+      ],
+      tabel: {
+        kop: ["wie", "mezelf, jezelf …", "voorbeeld"],
+        rijen: [
+          ["je", "me (m')", "je m'appelle"],
+          ["tu", "te (t')", "tu t'appelles"],
+          ["il/elle", "se (s')", "il s'appelle"],
+          ["nous", "nous", "nous nous appelons"],
+          ["vous", "vous", "vous vous appelez"],
+          ["ils/elles", "se (s')", "ils s'appellent"],
+        ],
+      },
       voorbeelden: [
         { fr: "Je suis content.", nl: "Ik ben blij." },
         { fr: "Il a dix ans.", nl: "Hij is tien (jaar)." },
